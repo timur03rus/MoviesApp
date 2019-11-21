@@ -27,7 +27,7 @@
             android:id="@+id/movie_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{movie.localizedName}"
+            android:text="@{movie.name}"
             android:layout_marginRight="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/movie_image"

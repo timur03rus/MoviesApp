@@ -10,7 +10,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -31,6 +33,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 public class MoviesListFragment extends Fragment {
+    private Toolbar toolbar;
+    private int spinnerPosition = 0;
 
     RecyclerView recyclerView;
     MoviesAdapter adapter;
@@ -38,6 +42,7 @@ public class MoviesListFragment extends Fragment {
     MovieList sortedMovie;
     Spinner spinner;
     String[] genres = {
+            "Выберите жанр:",
             "драма", "мелодрама", "комедия", "приключения",
             "боевик", "ужасы", "биография", "триллер", "криминал",
             "детектив", "фантастика", "фэнтези", "мюзикл"
@@ -60,12 +65,28 @@ public class MoviesListFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_movies_list, container, false);
         fetchData();
 
+        if (savedInstanceState != null) {
+            spinnerPosition = savedInstanceState.getInt("SPINNER_POSITION");
+        }
+
         spinner = view.findViewById(R.id.spinner);
         recyclerView = view.findViewById(R.id.recycler_view);
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
+        toolbar = getActivity().findViewById(R.id.toolbar);
+        setupToolbar();
 
         return view;
+    }
+
+    @Override
+    public void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("SPINNER_POSITION", spinnerPosition);
+    }
+
+    private void setupToolbar() {
+        toolbar.setTitle("MoviesApp");
     }
 
     private void fetchData() {
@@ -100,13 +121,22 @@ public class MoviesListFragment extends Fragment {
         arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(arrayAdapter);
         spinner.setPrompt("Выберите жанр");
+        spinner.setSelection(spinnerPosition);
         spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                sortMovies();
-                adapter = new MoviesAdapter(getContext(), sortedMovie);
-                recyclerView.setAdapter(adapter);
-                adapter.notifyDataSetChanged();
+                if (position == 0){
+                    spinnerPosition = position;
+
+                    setupRecyclerAdapter();
+                } else {
+                    spinnerPosition = position;
+
+                    sortMovies();
+                    adapter = new MoviesAdapter(getContext(), sortedMovie);
+                    recyclerView.setAdapter(adapter);
+                    adapter.notifyDataSetChanged();
+                }
             }
 
             @Override

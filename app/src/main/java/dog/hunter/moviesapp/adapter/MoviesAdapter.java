@@ -75,6 +75,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
             AppCompatActivity activity = (AppCompatActivity) v.getContext();
             DetailFragment fragment = new DetailFragment();
             bundle.putSerializable("MOVIE", movies.getFilms().get(getAdapterPosition()));
+            bundle.putString("LOCAL_NAME", movies.getFilms().get(getAdapterPosition()).getLocalizedName());
             fragment.setArguments(bundle);
             activity.getSupportFragmentManager()
                     .beginTransaction()

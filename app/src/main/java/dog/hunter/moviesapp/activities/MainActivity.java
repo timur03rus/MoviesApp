@@ -1,7 +1,9 @@
 package dog.hunter.moviesapp.activities;
 
 import android.os.Bundle;
+import android.os.PersistableBundle;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentManager;
@@ -22,9 +24,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setupToolbar();
-
-        transaction.add(R.id.fragment_container, new MoviesListFragment()).commit();
+        if (savedInstanceState == null) {
+            setupToolbar();
+            transaction.add(R.id.fragment_container, new MoviesListFragment()).commit();
+        }
 
     }
 
@@ -33,8 +36,16 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        toolbar.setNavigationOnClickListener(v -> {
-            onBackPressed();
-        });
+        toolbar.setNavigationOnClickListener(v -> onBackPressed());
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
     }
 }
